@@ -1,17 +1,18 @@
+const bcrypt=require('bcrypt');
+const saltRounds=10;
+
+
+
 function HashIt(plainPassword) {
 
-    hashedPass=plainPassword+"ISHASHED";
+    const hashedPass=bcrypt.hashSync(plainPassword, saltRounds);
     return hashedPass;
     
 }
 
 function VerifyPass(passFromFE, hashFromBE){
 
-    hashedPass=passFromFE+"ISHASHED";
-    if(hashedPass==hashFromBE){
-        return true;
-    }
-    return false;
+    return bcrypt.compareSync(passFromFE, hashFromBE)
 
 }
 

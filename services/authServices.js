@@ -5,43 +5,93 @@ const tokenHelpers=require('../utils/tokenHelper')
 
 async function Signup(signUpObj){
     signUpObj.password=passHelpers.HashIt(signUpObj.password);
-    signUpObj.token=tokenHelpers.CreateToken(signUpObj.email,signUpObj.mobileNo);
-    signUpObj.refToken=tokenHelpers.CreateToken(signUpObj.email,signUpObj.mobileNo);
+    const toks=tokenHelpers.CreateToken(signUpObj.email,signUpObj.mobileNo);
+    signUpObj.token=toks.token,signUpObj.refToken=toks.refToken;
     signUpObj.lastLogin=new Date();
 
     const insQuery=`insert into users(type , fName , lName , userid , mobileNo,  password , email , address, token , refToken, lastLogin) values("${signUpObj.type}", "${signUpObj.fName}", "${signUpObj.lName}", "${signUpObj.userId}", ${signUpObj.mobileNo}, "${signUpObj.password}", "${signUpObj.email}", "${signUpObj.address}", "${signUpObj.token}", "${signUpObj.refToken}", now()) ;`
 
-    const dbResp=await dbFeats.doThis(insQuery);
-
-    if(dbResp.error){
-        console.log(dbResp.error)
+    try{
+        const dbResp=await dbFeats.doThis(insQuery);
+        console.log(dbResp.results);
+        return new Respond(null,null,"Signed up Successfully",200);
+    } catch(err){
+        console.log(err)
         return Respond.internalServerError;
-        //return {err:dbResp.error,msg:"Internal Server Error",stat:500};
     }
-
-    return new Respond(null,null,"Signed up Successfully",200);
-    //return {err:null,msg:"Signed Up Successfully",stat:200};
 }
 
-async function Login(loginObj){
+async function CusLogin(loginObj){
 
-    const checkQuery=`select * from users where userid="${loginObj.userid}" or mobileNo="${loginObj.mobileNo}";`;
+    const checkQuery=`select * from users where type='cust' and (userid="${loginObj.userId}" or mobileNo="${loginObj.mobileNo}");`;
 
-    const dbResp=await dbFeats.doThis(checkQuery)
-    if(dbResp.error){
-        console.log(dbResp.error)
+    try{
+        const dbResp=await dbFeats.doThis(checkQuery);
+        if(dbResp.results.length==0) return new Respond(null,"Status Bad Request","No User Found",403);
+
+        const chosenOne=dbResp.results[0];
+        if(passHelpers.VerifyPass(loginObj.password,chosenOne.password)==false) return new Respond(null,"Status Bad Request","Wrong Password",403);
+
+        const toks=await tokenHelpers.UpdateToken(chosenOne.email,chosenOne.mobileNo);
+        console.log(toks);
+        chosenOne.token=toks.uptoken,chosenOne.refToken=toks.uprefToken;
+
+        //console.log(tokenHelpers.VerifyToken({email:chosenOne.email,mobileNo:chosenOne.mobileNo},chosenOne.token))
+        
+        return new Respond(chosenOne,null,"Let him in",200);
+    } catch(err){
+        console.log(err);
         return Respond.internalServerError;
-        //return {err:dbResp.error,msg:"Internal Server Error",stat:500};
     }
 
-    if(dbResp.results.length==0) return new Respond(null,"Status Bad Request","No User Found",403);
-
-    const chosenOne=dbResp.results[0];
-    if(passHelpers.VerifyPass(loginObj.password,chosenOne.password)==false) return new Respond(null,"Status Bad Request","Wrong Password",403);
-    
-    return new Respond(dbResp.results[0],null,"Let him in",200);
 }
 
-const authServices={Signup,Login};
+async function ResLogin(loginObj){
+
+    const checkQuery=`select * from users where type='res' and (userid="${loginObj.userId}" or mobileNo="${loginObj.mobileNo}");`;
+
+    try{
+        const dbResp=await dbFeats.doThis(checkQuery);
+        if(dbResp.results.length==0) return new Respond(null,"Status Bad Request","No User Found",403);
+
+        const chosenOne=dbResp.results[0];
+        if(passHelpers.VerifyPass(loginObj.password,chosenOne.password)==false) return new Respond(null,"Status Bad Request","Wrong Password",403);
+
+        const toks=await tokenHelpers.UpdateToken(chosenOne.email,chosenOne.mobileNo);
+        console.log(toks);
+        chosenOne.token=toks.uptoken,chosenOne.refToken=toks.uprefToken;
+        
+        return new Respond(chosenOne,null,"Let him in",200);
+    }catch(err){
+        console.log(err);
+        return Respond.internalServerError;
+    }
+
+}
+
+async function MovLogin(loginObj){
+
+    const checkQuery=`select * from users where type='move' and (userid="${loginObj.userId}" or mobileNo="${loginObj.mobileNo}");`;
+
+    try{
+        const dbResp=await dbFeats.doThis(checkQuery);
+        if(dbResp.results.length==0) return new Respond(null,"Status Bad Request","No User Found",403);
+
+        const chosenOne=dbResp.results[0];
+        if(passHelpers.VerifyPass(loginObj.password,chosenOne.password)==false) return new Respond(null,"Status Bad Request","Wrong Password",403);
+
+        const toks=await tokenHelpers.UpdateToken(chosenOne.email,chosenOne.mobileNo);
+        chosenOne.token=toks.uptoken,chosenOne.refToken=toks.uprefToken;
+
+        
+        return new Respond(chosenOne,null,"Let him in",200);
+    }catch(err){
+        console.log(err);
+        return Respond.internalServerError;
+    }
+
+}
+
+const authServices={Signup,CusLogin,ResLogin,MovLogin};
 
 module.exports=authServices;

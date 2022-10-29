@@ -16,8 +16,11 @@ const connection=mysql.createConnection({
 // })
 
 function doThis(qString){
-    return new Promise((resolve, reject)=>{
+    return new Promise(function(resolve, reject){
         connection.query(qString,  (error, results,fields)=>{
+            if(error){
+                return reject(error)
+            }
             const fin={error,results,fields}
             return resolve(fin);
         });

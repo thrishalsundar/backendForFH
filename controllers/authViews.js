@@ -1,35 +1,74 @@
 const {User} =require('../models/models');
 const Respond=require('../utils/respHelper')
-const services=require('../services/authServices')
+const services=require('../services/authServices');
 
 
 async function Signup(req,res){
     const newUser=new User(req.body.signupObj);
     if (newUser.SignupValidator()==false){
-        res.send(Respond.statusBadRequest);
-        return;
+        return res.send(Respond.statusBadRequest);
     }
 
-    const resp=await services.Signup(newUser);
-    //clogthis
-
-    res.status(resp.stat).send(resp);
-    return;
+    try{
+        const resp=await services.Signup(newUser);
+        return res.status(resp.stat).send(resp);
+    }catch(err){
+        return res.status(500).send(Respond.internalServerError);
+    }
 }
 
-async function Login(req,res){
+async function CusLogin(req,res){
     const logObj=new User(req.body.loginCreds);
+    if(logObj.type!=='cus'){
+        return res.send(Respond.statusBadRequest);
+    }
     if(logObj.LoginValidator()==false){
-        res.send(Respond.statusBadRequest);
-        return;
+        return res.send(Respond.statusBadRequest);
     }
 
-    const resp=await services.Login(logObj);
 
-    res.status(resp.stat).send(resp);
-    return;
+    try{
+        const resp=await services.CusLogin(logObj);
+        return res.status(resp.stat).send(resp);
+    }catch(err){
+        return res.status(500).send(Respond.internalServerError);
+    }
 }
 
-const authViews={Signup,Login};
+async function ResLogin(req,res){
+    const logObj=new User(req.body.loginCreds);
+    if(logObj.type!=='res'){
+        return res.send(Respond.statusBadRequest);
+    }
+    if(logObj.LoginValidator()==false){
+        return res.send(Respond.statusBadRequest);
+    }
+
+    try{
+        const resp=await services.ResLogin(logObj);
+        return res.status(resp.stat).send(resp);
+    }catch(err){
+        return res.status(500).send(Respond.internalServerError);
+    }
+}
+
+async function MovLogin(req,res){
+    const logObj=new User(req.body.loginCreds);
+    if(logObj.type!=='mov'){
+        return res.send(Respond.statusBadRequest);
+    }
+    if(logObj.LoginValidator()==false){
+        return res.send(Respond.statusBadRequest);
+    }
+
+    try{
+        const resp=await services.MovLogin(logObj);
+        return res.status(resp.stat).send(resp);
+    }catch(err){
+        return res.status(500).send(Respond.internalServerError);
+    }
+}
+
+const authViews={ Signup,CusLogin,ResLogin,MovLogin };
 
 module.exports=authViews;

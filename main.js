@@ -1,19 +1,24 @@
-//todo
-//controllers and rds in aws
 const express=require("express")
 const bodyParser=require('body-parser')
 require("dotenv").config();
-
-
-
 const app=express();
-const routes=require('./routes/userRoutes');
+const VerifyToken=require('./middleware/verifyToken');
 
-//init
+
+//routes
+const authRoutes=require('./routes/authRoutes');
+const cusRoutes=require('./routes/cusRoutes');
+const resRoutes=require('./routes/resRoutes');
+const movRoutes=require('./routes/movRoutes');
+
+
 const port=process.env.PORT;
 
 app.use(bodyParser.json());
-app.use('/apis',routes);
+app.use('/guest', authRoutes);
+app.use('/res',VerifyToken,resRoutes);
+app.use('/mov',VerifyToken,movRoutes);
+app.use('/cus',VerifyToken,cusRoutes);
 
 
 function main(){
