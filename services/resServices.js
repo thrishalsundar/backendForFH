@@ -53,9 +53,44 @@ async function AddFoodItems(foodItemsObjects){
 }
 
 
-async function UpdateOrderStatus(){}
-async function UpdateFoodStatus(){}
-async function UpdateOpenStatus(){}
+async function UpdateOrderStatus(orderId){
+
+    const updateOrderQuery=``;
+
+    try{
+        const dbResp=await dbFeats.doThis(updateOrderQuery);
+        return new Respond(null,null,"Successful",200);
+    }catch(err){
+        console.log(err);
+        return Respond.internalServerError;
+    }
+
+}
+async function UpdateFoodStatus(foodId){
+
+    const updateFoodQuery=``;
+
+    try{
+        const dbResp=await dbFeats.doThis(updateFoodQuery);
+        return new Respond(null,null,"Successful",200);
+    }catch(err){
+        console.log(err);
+        return Respond.internalServerError;
+    }
+}
+
+async function UpdateOpenStatus(restId){
+
+    const updateOpenStatQuery=``;
+    
+    try{
+        const dbResp=await dbFeats.doThis(updateOpenStatQuery);
+        return new Respond(null,null,"Successful",200);
+    }catch(err){
+        console.log(err);
+        return Respond.internalServerError;
+    }
+}
 
 const resServices={
     GetFoods,
