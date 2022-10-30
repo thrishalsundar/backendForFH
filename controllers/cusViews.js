@@ -48,6 +48,7 @@ async function CreateCart(req,res){
     const cartData=req.body.cartData;
 
     const newCart=new Cart(cartData.cst,cartData.rst,cartData.time);
+    if(newCart.CartValidator()===false) return res.status(403).send(Respond.statusBadRequest);
 
     try{
         const resp=await services.CreateCart(newCart);
@@ -61,10 +62,11 @@ async function CreateCart(req,res){
 async function UpdateCart(req,res){
 
     const cartData=req.body.cartData;
+    if(cartData.cartId==="") return res.status(403).send(Respond.statusBadRequest);
 
     try{
         const resp=await services.UpdateCart(cartData.cartId,cartData.cartContents);
-        return res.status(resp.stat).send(Respond.internalServerError);
+        return res.status(resp.stat).send(resp);
     }catch(err){
         console.log(err);
         return res.status(500).send(Respond.internalServerError);
@@ -78,7 +80,7 @@ async function ConfirmCart(req,res){
 
     try{
         const resp=await services.ConfirmCart(cartId);
-        return res.status(resp.stat).send(Respond.internalServerError);
+        return res.status(resp.stat).send(resp);
     }catch(err){
         console.log(err);
         return res.status(500).send(Respond.internalServerError);
@@ -117,6 +119,9 @@ async function PlaceOrder(req,res){
     const orderDets=req.body.orderDets;
     const newOrder=new Order(orderDets.cartId,orderDets.name,orderDets.mobileNo);
 
+    if(newOrder.OrderValidator()===false) return res.status(403).send(Respond.statusBadRequest);
+
+
     try{
         const resp=await services.PlaceOrder(newOrder);
         return res.status(resp.stat).send(resp);
@@ -138,7 +143,6 @@ async function CancelOrder(req,res){
         console.log(err);
         return res.status(500).send(Respond.internalServerError);
     }
-
 }
 
 

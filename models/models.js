@@ -73,25 +73,26 @@ class Restaurant{
         this.rating=0,
         this.reviews=[]    //abt
     }
+
 }
 
 class FoodItem{
 
-    constructor(){
+    constructor(resId,foodItemObj){
         this.id="",
-        this.foodId="",
-        this.displayName="",
-        this.resId="", //hotelid  resusername
+        this.foodId=foodName+resId,
+        this.displayName=foodItemObj.displayName,
+        this.resId=resId, //hotelid  resusername
         //this.calories="",
-        this.categoryType="",
-        this.cuisineType="",
-        this.isVeg=true,   
-        this.description="",
-        this.amount="",
-        this.contents="",
+        this.categoryType=foodItemObj.categoryType,
+        this.cuisineType=foodItemObj.cuisineType,
+        this.isVeg=foodItemObj.isVeg,
+        this.description=foodItemObj.description,
+        this.amount=foodItemObj.amount,
+        this.contents=foodItemObj.contents,
         this.instock=false, 
         this.rating=0,
-        this.image="",
+        this.image=foodItemObj.image,
         this.reviews=[]  //abt
     }
 }
@@ -107,15 +108,20 @@ class Cart{
         this.confirmStat=false,
         this.createdAt= new Date()
     }
+
+    CartValidator(){
+        if(this.cartId==='' || this.cusId==='' || this.resId==='' ) return false;
+        return true;
+    }
 }
 
 class OrderItem{
-    constructor(){
+    constructor(foodId,count,cartId){
         this.id="",
-        this.foodItem={},
-        this.count=0,
+        this.foodItem=foodId,
+        this.count=count,
         this.itemTotal=0,
-        this.cartId=""
+        this.cartId=cartId
     }
 }
 
@@ -125,7 +131,7 @@ class Order{
         this.orderId=cartId,
         this.cusId="", //userid
         this.name=name,
-        this.cartId="",
+        this.cartId=cartId,
         this.movId="",
         this.secretId="",  //after out4delivery
         this.orderedAt=new Date(),
@@ -134,6 +140,17 @@ class Order{
         this.discount=0,
         this.tax=0,
         this.total=0
+    }
+
+    FillCartDets(cartObj){
+        this.cusId=cartObj.cartId;
+        this.total=cartObj.total
+    }
+
+
+    OrderValidator(){
+        if(this.cartId==='' ||  this.name==='' || this.mobileNo==='') return false;
+        return true;
     }
 }
 
