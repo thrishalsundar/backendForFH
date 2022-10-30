@@ -3,8 +3,12 @@ const services=require("../services/resServices");
 const FoodItem=require("../models/models");
 
 async function GetFoods(_,res){
+
+    const resId=req.query.resId;
+    if(!resId || resId==='') return res.status(403).send(Respond.statusBadRequest);
+
     try{
-        const resp=await services.GetFoods(); 
+        const resp=await services.GetFoods(resId); 
         return res.status(resp.stat).send(resp);
     }catch(err){
         console.log(err);
@@ -14,11 +18,15 @@ async function GetFoods(_,res){
 
 
 async function UpdateStock(req,res){
+
+    const resId=req.query.resId;
+    if(!resId || resId==='') return res.status(403).send(Respond.statusBadRequest);
+
     const foodIds=req.body.foodIds;
     if(!foodIds || foodIds.length===0) return res.status(403).send(Respond.statusBadRequest);
     
     try{
-        const resp=await services.UpdateStock(foodIds);
+        const resp=await services.UpdateStock(resId,foodIds);
         return res.status(resp.stat).send(resp);
     }catch(err){
         console.log(err);
@@ -29,12 +37,15 @@ async function UpdateStock(req,res){
 
 
 async function UpdateRestDets(req,res){
-    const updatedDets=req.body.resDets;
 
+    const resId=req.query.resId;
+    if(!resId || resId==='') return res.status(403).send(Respond.statusBadRequest);
+
+    const updatedDets=req.body.resDets;
     if(!updatedDets || updatedDets.resId==="") return  res.status(403).send(Respond.statusBadRequest);
 
     try{
-        const resp=await services.UpdateRestDets(updatedDets);
+        const resp=await services.UpdateRestDets(resId,updatedDets);
         return res.status(resp.stat).send(resp);
     }catch(err){
         console.log(err);
@@ -44,8 +55,11 @@ async function UpdateRestDets(req,res){
 
 async function GetOrders(_,res){
 
+    const resId=req.query.resId;
+    if(!resId || resId==='') return res.status(403).send(Respond.statusBadRequest);
+
     try{
-        const resp=await services.GetOrders();
+        const resp=await services.GetOrders(resId);
         return res.status(resp.stat).send(resp);
     }catch(err){
         console.log(err);
@@ -55,15 +69,13 @@ async function GetOrders(_,res){
 }
 
 async function AddFoodItems(req,res){
-    const resId=req.query.resId;
-    const foodItems=req.body.foodItems;
 
+
+    const foodItems=req.body.foodItems;
     let foodItemsObjects;
 
-    if(!resId || resId==="") return res.status(403).send(Respond.statusBadRequest);
-
     for(const fI in foodItems){
-        const foodItemObject=new FoodItem(resId,fI);
+        const foodItemObject=new FoodItem(fI);
         if(foodItemObject.FoodValidator===false){
             console.log(67);
             return res.status(403).send(Respond.statusBadRequest);
@@ -135,7 +147,6 @@ async function UpdateOpenStatus(req,res){
     }
 
 }
-
 
 
 const resViews={
