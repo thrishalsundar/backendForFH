@@ -19,7 +19,7 @@ async function Signup(req,res){
 
 async function CusLogin(req,res){
     const logObj=new User(req.body.loginCreds);
-    if(logObj.type!=='cus'){
+    if(logObj.type!=='c'){
         return res.send(Respond.statusBadRequest);
     }
     if(logObj.LoginValidator()==false){

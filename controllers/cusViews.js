@@ -12,8 +12,8 @@ async function GetFoods(_,res){
     }
 }
 
-async function GetFood(_,res){
-    const foodId=req.query("food-id");
+async function GetFood(req,res){
+    const foodId=req.query.foodId;
     try{
         const resp=await services.GetFood(foodId); 
         return res.status(resp.stat).send(resp);
@@ -33,8 +33,8 @@ async function GetRests(_,res){
     }
 }
 
-async function GetRest(_,res){
-    const rstId=req.query("food-id");
+async function GetRest(req,res){
+    const rstId=req.query.resId;
     try{
         const resp=await services.GetRest(rstId); 
         return res.status(resp.stat).send(resp);

@@ -80,7 +80,7 @@ class FoodItem{
 
     constructor(resId,foodItemObj){
         this.id="",
-        this.foodId=foodName+resId,
+        this.foodId=this.foodName+resId,
         this.displayName=foodItemObj.displayName,
         this.resId=resId, //hotelid  resusername
         //this.calories="",
@@ -135,7 +135,7 @@ class Order{
         this.movId="",
         this.secretId="",  //after out4delivery
         this.orderedAt=new Date(),
-        this.orderStat="ini",   // ini:cus,cooked:res,out4delivery:mov,delivered:mov
+        this.orderStat="i",   // ini:cus,cooked:res,out4delivery:mov,delivered:mov
         this.mobileNo=mobileNo,
         this.discount=0,
         this.tax=0,

@@ -3,7 +3,7 @@ const connection=mysql.createConnection({
     host:'localhost',
     user:'forTeam',
     password:'rmkpullingos',
-    database:'forFH',
+    database:'food_delivery',
     port:3333
 });
 

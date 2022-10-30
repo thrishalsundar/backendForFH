@@ -116,13 +116,13 @@ async function UpdateOrderStatus(req,res){
 
 async function UpdateFoodStatus(req,res){
 
-    const foodId=req.query.orderId;
+    const foodData = req.body.foodData;
 
-    if(!foodId || foodId==='') return res.status(403).send(Respond.statusBadRequest);
+    if(!foodData || foodData.foodId==='') return res.status(403).send(Respond.statusBadRequest);
 
 
     try{
-        const resp=await services.UpdateFoodStatus(foodId);
+        const resp=await services.UpdateFoodStatus(foodData);
         return res.status(resp.stat).send(resp);
     }catch(err){
         console.log(err);
@@ -133,13 +133,13 @@ async function UpdateFoodStatus(req,res){
 
 async function UpdateOpenStatus(req,res){
 
-    const resId=req.query.resId;
+    const resData=req.body.resData;
 
-    if(!resId || resId==='') return res.status(403).send(Respond.statusBadRequest);
+    if(!resData || resData.resId==='') return res.status(403).send(Respond.statusBadRequest);
 
 
     try{
-        const resp=await services.UpdateOpenStatus(resId);
+        const resp=await services.UpdateOpenStatus(resData);
         return res.status(resp.stat).send(resp);
     }catch(err){
         console.log(err);

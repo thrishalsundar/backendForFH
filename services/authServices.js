@@ -9,7 +9,7 @@ async function Signup(signUpObj){
     signUpObj.token=toks.token,signUpObj.refToken=toks.refToken;
     signUpObj.lastLogin=new Date();
 
-    const insQuery=`insert into users(type , fName , lName , userid , mobileNo,  password , email , address, token , refToken, lastLogin) values("${signUpObj.type}", "${signUpObj.fName}", "${signUpObj.lName}", "${signUpObj.userId}", ${signUpObj.mobileNo}, "${signUpObj.password}", "${signUpObj.email}", "${signUpObj.address}", "${signUpObj.token}", "${signUpObj.refToken}", now()) ;`
+    const insQuery=`insert into user(type , first_name , last_name , user_id , mobile_no,  password , email , address, token , ref_token,   last_login) values("${signUpObj.type}", "${signUpObj.fName}", "${signUpObj.lName}", "${signUpObj.userId}", ${signUpObj.mobileNo}, "${signUpObj.password}", "${signUpObj.email}", "${signUpObj.address}", "${signUpObj.token}", "${signUpObj.refToken}", now()) ;`
 
     try{
         const dbResp=await dbFeats.doThis(insQuery);
@@ -23,7 +23,7 @@ async function Signup(signUpObj){
 
 async function CusLogin(loginObj){
 
-    const checkQuery=`select * from users where type='cust' and (userid="${loginObj.userId}" or mobileNo="${loginObj.mobileNo}");`;
+    const checkQuery=`select * from user where type='c' and (user_id="${loginObj.userId}" or mobile_no="${loginObj.mobileNo}");`;
 
     try{
         const dbResp=await dbFeats.doThis(checkQuery);

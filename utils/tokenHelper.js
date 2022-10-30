@@ -13,7 +13,7 @@ async function UpdateToken(email,mobileNo){
     uptoken=toks.token;uprefToken=toks.refToken;
     console.log(uptoken+"                                                   "+uprefToken);
 
-    const changeQuery=`update users set token="${uptoken}", refToken="${uprefToken}" where userid="${email}"`
+    const changeQuery=`update user set token="${uptoken}", ref_token="${uprefToken}", last_login=now() where email="${email}"`
 
     try{
         const dbResp=await dbFeats.doThis(changeQuery);

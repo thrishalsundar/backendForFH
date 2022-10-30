@@ -4,7 +4,7 @@ const Respond = require('../utils/respHelper');
 
 async function GetFoods(){
 
-    const getFoodsQuery=``;
+    const getFoodsQuery=`select * from food_item`;
     try{
         const dbResp=await dbFeats.doThis(getFoodsQuery);
         return new Respond(dbResp.results,null,"Successful",200);
@@ -16,7 +16,7 @@ async function GetFoods(){
 }
 
 async function GetFood(foodId){
-    const getFoodQuery=`${foodId}`;
+    const getFoodQuery=`select * from food_item where food_id="${foodId}"`;
 
     try{
         const dbResp=await dbFeats.doThis(getFoodQuery);
@@ -29,7 +29,7 @@ async function GetFood(foodId){
 
 async function GetRests(){
 
-    const getRestsQuery=``;
+    const getRestsQuery=`select * from restaurant where open_status=1`;
     try{
         const dbResp=await dbFeats.doThis(getRestsQuery);
         return new Respond(dbResp.results,null,"Successful",200);
@@ -42,7 +42,7 @@ async function GetRests(){
 
 async function GetRest(restId){
 
-    const getRestQuery=`${restId}`;
+    const getRestQuery=`select * from restaurant where res_id="${restId}"`;
     try{
         const dbResp=await dbFeats.doThis(getRestQuery);
         return new Respond(dbResp.results,null,"Successful",200);
@@ -55,7 +55,7 @@ async function GetRest(restId){
 
 async function CreateCart(newCart){
 
-    const dbQuery=`${newCart}`;
+    const dbQuery=`insert into cart(cart_id,total,cus_id,res_id,confirm_stat,created_at) values ("${newCart.cartId}", "${newCart.total}", "${newCart.cusId}", "${newCart.resId}", "${newCart.confirmStat}"), now()`;
 
     try{
         const dbResp=await dbFeats.doThis(dbQuery);
@@ -74,11 +74,11 @@ async function UpdateCart(cartId,cartContents){
     let totalAmount=0;
     for(const oItem of cartContents){
         const orderIt=new OrderItem(oItem.foodId,oItem.count,cartId);
-        const retFoodItem=``;
-        const insOrderItem=``;
+        const retFoodItem=`select amount from food_item where food_id="${oItem.foodId}"`;    //
         try{
             const dbResp=await dbFeats.doThis(retFoodItem);
             orderIt.itemTotal=oItem.count*dbResp.results[0].amount;
+            const insOrderItem=`insert into order_item(food_item,count,item_total,cart_id) values ("${oItem.foodId}", "${oItem.count}", "${orderIt.itemTotal}", "${cartId}")`;  //insert
             const dbResp1=await dbFeats.doThis(insOrderItem);
             console.log(dbResp1);
             orderIt.foodItem=dbResp.results[0];
@@ -90,7 +90,7 @@ async function UpdateCart(cartId,cartContents){
         }
     }
 
-    const updateCartQuery=`${totalAmount}`;
+    const updateCartQuery=`update cart set total="${totalAmount}" where cart_id="${cartId}"`;
     try{
         const dbResp=await dbFeats.doThis(updateCartQuery);
         dbResp.results[0].cartContents=orderItemArr;
@@ -104,7 +104,7 @@ async function UpdateCart(cartId,cartContents){
 }
 //
 async function ConfirmCart(cartId){
-    const dbQuery=`${cartId}`
+    const dbQuery=`update cart set confirm_stat=1 where cart_id="${cartId}"`;
 
     try{
         const dbResp=await dbFeats.doThis(dbQuery);
@@ -117,7 +117,7 @@ async function ConfirmCart(cartId){
 }
 
 async function DeleteCart(cartId){
-    const dbQuery=`${cartId}`
+    const dbQuery=`delete from cart where cart_id="${cartId}"`
 
     try{
         const dbResp=await dbFeats.doThis(dbQuery);
@@ -130,8 +130,8 @@ async function DeleteCart(cartId){
 }
 
 async function SearchRestOrFood(searchQuery){
-    const restQuery=`${searchQuery}`;
-    const foodQuery=`${searchQuery}`;
+    const restQuery=`select * from restaurant where display_name like "%${searchQuery}%" and open_status=1`;
+    const foodQuery=`select * from food_item where display_name like "%${searchQuery}%"`;
     let restRes,foodRes;
 
     try{
@@ -154,7 +154,7 @@ async function SearchRestOrFood(searchQuery){
 }
 
 async function PlaceOrder(orderObj){
-    const fetchCartDets=``;
+    const fetchCartDets=`select * from cart where cart_id="${orderObj.cartId}"`;
     let cartDets;
 
     try{
@@ -168,7 +168,8 @@ async function PlaceOrder(orderObj){
 
     orderObj.FillCartDets(cartDets);
 
-    const insNewOrder=``;
+
+    const insNewOrder=`insert into food_delivery.order (order_id,cus_id,name,cart_id,ordered_at,order_stat,mobile_no,total) values("${orderObj.cartId}","${orderObj.cusId}" ,"${orderObj.name}", "${orderObj.cartId}" , now(), "i", "${orderObj.mobileNo}","${orderObj.total}")`;
 
     try{
         const dbResp=await dbFeats.doThis(insNewOrder);
@@ -181,14 +182,14 @@ async function PlaceOrder(orderObj){
 }
 
 async function CancelOrder(orderId){
-    const fetchOrder=`${orderId}`;
-    const cancelOrder=``;
+    const fetchOrder=`select * from order where order="${orderId}"`;
+    const cancelOrder=`update order set orderstat='x' where order_id="${orderId}"`;
     
     try{
         const dbResp=await dbFeats.doThis(fetchOrder);
         if(dbResp.results.length===0) return new Respond(null,"Status Bad Request","No Cart in this cartId",403);
 
-        if(dbResp.results[0].orderStat!=='ini') return new Respond(null,"Status Bad Request","Order Already Processed and cannot be cancelled",403);
+        if(dbResp.results[0].orderStat!=='i') return new Respond(null,"Status Bad Request","Order Already Processed and cannot be cancelled",403);
     }catch(err){
         console.log(err);
         return Respond.internalServerError;
