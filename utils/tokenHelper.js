@@ -2,18 +2,18 @@ const jwt=require('jsonwebtoken');
 const secKey="aganaga";
 const dbFeats=require('../database/dbSetup');
 
-function CreateToken(email,mobileNo){
-    const token=jwt.sign({email,mobileNo}, secKey,{expiresIn: '24h' })
-    const refToken=jwt.sign({email,mobileNo}, secKey,{expiresIn: '168h' })
+function CreateToken(user_id,mobileNo){
+    const token=jwt.sign({user_id,mobileNo}, secKey,{expiresIn: '24h' })
+    const refToken=jwt.sign({user_id,mobileNo}, secKey,{expiresIn: '168h' })
     return {token,refToken};
 }
 
-async function UpdateToken(email,mobileNo){
-    const toks=CreateToken(email, mobileNo);
+async function UpdateToken(user_id,mobileNo){
+    const toks=CreateToken(user_id, mobileNo);
     uptoken=toks.token;uprefToken=toks.refToken;
     console.log(uptoken+"                                                   "+uprefToken);
 
-    const changeQuery=`update user set token="${uptoken}", ref_token="${uprefToken}", last_login=now() where email="${email}"`
+    const changeQuery=`update user set token="${uptoken}", ref_token="${uprefToken}", last_login=now() where user_id="${user_id}"`;
 
     try{
         const dbResp=await dbFeats.doThis(changeQuery);

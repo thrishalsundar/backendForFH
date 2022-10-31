@@ -55,7 +55,7 @@ async function GetRest(restId){
 
 async function CreateCart(newCart){
 
-    const dbQuery=`insert into cart(cart_id,total,cus_id,res_id,confirm_stat,created_at) values ("${newCart.cartId}", "${newCart.total}", "${newCart.cusId}", "${newCart.resId}", "${newCart.confirmStat}"), now()`;
+    const dbQuery=`insert into cart(cart_id,total,cus_id,res_id,created_at) values ("${newCart.cartId}", "${newCart.total}", "${newCart.cusId}", "${newCart.resId}", now())`;
 
     try{
         const dbResp=await dbFeats.doThis(dbQuery);

@@ -2,6 +2,9 @@ const Respond = require("../utils/respHelper");
 const services=require("../services/cusServices");
 const {Cart, Order} = require("../models/models");
 
+function checkToken(){
+}
+
 async function GetFoods(_,res){
     try{
         const resp=await services.GetFoods(); 
@@ -13,6 +16,7 @@ async function GetFoods(_,res){
 }
 
 async function GetFood(req,res){
+
     const foodId=req.query.foodId;
     try{
         const resp=await services.GetFood(foodId); 
@@ -45,6 +49,9 @@ async function GetRest(req,res){
 }
 
 async function CreateCart(req,res){
+
+
+    console.log(req);
     const cartData=req.body.cartData;
 
     const newCart=new Cart(cartData.cst,cartData.rst,cartData.time);

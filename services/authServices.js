@@ -5,7 +5,8 @@ const tokenHelpers=require('../utils/tokenHelper')
 
 async function Signup(signUpObj){
     signUpObj.password=passHelpers.HashIt(signUpObj.password);
-    const toks=tokenHelpers.CreateToken(signUpObj.email,signUpObj.mobileNo);
+    console.log(signUpObj.userId);
+    const toks=tokenHelpers.CreateToken(signUpObj.userId,signUpObj.mobileNo);
     signUpObj.token=toks.token,signUpObj.refToken=toks.refToken;
     signUpObj.lastLogin=new Date();
 
@@ -32,9 +33,9 @@ async function CusLogin(loginObj){
         const chosenOne=dbResp.results[0];
         if(passHelpers.VerifyPass(loginObj.password,chosenOne.password)==false) return new Respond(null,"Status Bad Request","Wrong Password",403);
 
-        const toks=await tokenHelpers.UpdateToken(chosenOne.email,chosenOne.mobileNo);
+        const toks=await tokenHelpers.UpdateToken(chosenOne.user_id,chosenOne.mobileNo);
         console.log(toks);
-        chosenOne.token=toks.uptoken,chosenOne.refToken=toks.uprefToken;
+        chosenOne.token=toks.uptoken,chosenOne.ref_token=toks.uprefToken;
 
         //console.log(tokenHelpers.VerifyToken({email:chosenOne.email,mobileNo:chosenOne.mobileNo},chosenOne.token))
         

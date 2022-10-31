@@ -9,9 +9,9 @@ routes.get('/myfoods',resViews.GetFoods);
 routes.put('/upstocks',resViews.UpdateStock);
 routes.put('/updaterest',resViews.UpdateRestDets);
 routes.get('/forders',resViews.GetOrders);
-routes.post('/addfoods',resViews.AddFoodItems)
-routes.put('/upordstat',resViews.UpdateOrderStatus)
-routes.put('/upfoodstat',resViews.UpdateFoodStatus)
-routes.put('/upreststat',resViews.UpdateOpenStatus)
+routes.post('/addfoods',resViews.AddFoodItems);
+routes.put('/upordstat',resViews.UpdateOrderStatus);
+routes.put('/upfoodstat',resViews.UpdateFoodStatus);
+routes.put('/upreststat',resViews.UpdateOpenStatus);
 
 module.exports=routes;
