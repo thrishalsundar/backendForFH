@@ -17,6 +17,26 @@ async function Signup(req,res){
     }
 }
 
+async function AdminLogin(req,res){
+    const logObj=new User(req.body.loginCreds);
+    if(logObj.type!=='a'){
+        return res.send(Respond.statusBadRequest);
+    }
+    if(logObj.LoginValidator()==false){
+        return res.send(Respond.statusBadRequest);
+    }
+
+
+    try{
+        const resp=await services.AdminLogin(logObj);
+        return res.status(resp.stat).send(resp);
+    }catch(err){
+        return res.status(500).send(Respond.internalServerError);
+    }
+}
+    
+
+
 async function CusLogin(req,res){
     const logObj=new User(req.body.loginCreds);
     if(logObj.type!=='c'){
@@ -69,6 +89,6 @@ async function MovLogin(req,res){
     }
 }
 
-const authViews={ Signup,CusLogin,ResLogin,MovLogin };
+const authViews={ Signup,AdminLogin,CusLogin,ResLogin,MovLogin };
 
 module.exports=authViews;

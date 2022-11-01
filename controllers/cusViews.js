@@ -2,7 +2,9 @@ const Respond = require("../utils/respHelper");
 const services=require("../services/cusServices");
 const {Cart, Order} = require("../models/models");
 
-function checkToken(){
+function checkToken(fromToken,inRequest){
+    if(fromToken===inRequest) return false;
+    return true;
 }
 
 async function GetFoods(_,res){
@@ -51,11 +53,12 @@ async function GetRest(req,res){
 async function CreateCart(req,res){
 
 
-    console.log(req);
     const cartData=req.body.cartData;
 
     const newCart=new Cart(cartData.cst,cartData.rst,cartData.time);
     if(newCart.CartValidator()===false) return res.status(403).send(Respond.statusBadRequest);
+
+    if(checkToken(req.user.user_id, cartData.cst)) return res.status(403).send(Respond.statusBadRequest);
 
     try{
         const resp=await services.CreateCart(newCart);
@@ -71,6 +74,7 @@ async function UpdateCart(req,res){
     const cartData=req.body.cartData;
     if(cartData.cartId==="") return res.status(403).send(Respond.statusBadRequest);
 
+    if(checkToken(req.user.user_id, cartData.cartId)) return res.status(403).send(Respond.statusBadRequest);
     try{
         const resp=await services.UpdateCart(cartData.cartId,cartData.cartContents);
         return res.status(resp.stat).send(resp);
@@ -83,7 +87,9 @@ async function UpdateCart(req,res){
 
 async function ConfirmCart(req,res){
     const cartId=req.query.cartId;
+
     if(cartId==="") return res.status(403).send(Respond.statusBadRequest);
+    if(checkToken(req.user.user_id, cartId)) return res.status(403).send(Respond.statusBadRequest);
 
     try{
         const resp=await services.ConfirmCart(cartId);

@@ -18,7 +18,7 @@ class User{
         this.mobileNo=signupObj.mobileNo,
         this.password=signupObj.password,
         this.email=signupObj.email,
-        this.address={},   //string in SQL    
+        this.address=this.address,   //string in SQL    
         this.orderHistory=[], //historyStruct based on user -abt
         this.token="",
         this.refToken="",
@@ -36,6 +36,9 @@ class User{
         if(this.userId=="" && this.mobileNo=="" && this.email=="") return false;
         if(this.password=="") return false;
         return true;
+    }
+
+    movUserFiller(){
     }
 }
 
@@ -55,21 +58,21 @@ class Address{
 
 class Restaurant{
     
-    constructor(){
+    constructor(restData){
         this.id="",
-        this.displayName="",
-        this.branch="",
-        this.resId="",  //resUserName
-        this.email="",
+        this.displayName=restData.displayName;
+        this.branch=restData.branch,
+        this.resId=restData.resId,  //resUserName
+        this.email=restData.email,
         this.address={},  //str
         this.foodsAvail=[ 
             //        { foodId:"", inStock:false } 
         ],     //abt
-        this.logoUrl="",
-        this.website="",
+        this.logoUrl=restData.logoUrl,
+        this.website=restData.website,
         this.openStat=false,
-        this.oTime=new Date(),
-        this.cTime=new Date(),
+        this.oTime=restData.oTime,
+        this.cTime=restData.cTime,
         this.rating=0,
         this.reviews=[]    //abt
     }

@@ -49,7 +49,7 @@ async function CusLogin(loginObj){
 
 async function ResLogin(loginObj){
 
-    const checkQuery=`select * from users where type='res' and (userid="${loginObj.userId}" or mobileNo="${loginObj.mobileNo}");`;
+    const checkQuery=`select * from users where type='r' and (userid="${loginObj.userId}" or mobileNo="${loginObj.mobileNo}");`;
 
     try{
         const dbResp=await dbFeats.doThis(checkQuery);
@@ -72,7 +72,7 @@ async function ResLogin(loginObj){
 
 async function MovLogin(loginObj){
 
-    const checkQuery=`select * from users where type='move' and (userid="${loginObj.userId}" or mobileNo="${loginObj.mobileNo}");`;
+    const checkQuery=`select * from users where type='m' and (userid="${loginObj.userId}" or mobileNo="${loginObj.mobileNo}");`;
 
     try{
         const dbResp=await dbFeats.doThis(checkQuery);
@@ -93,6 +93,28 @@ async function MovLogin(loginObj){
 
 }
 
-const authServices={Signup,CusLogin,ResLogin,MovLogin};
+async function AdminLogin(loginObj){
+
+    const checkQuery=`select * from admin where type='a' and username="${loginObj.username}" ;`;
+
+    try{
+        const dbResp=await dbFeats.doThis(checkQuery);
+        if(dbResp.results.length==0) return new Respond(null,"Status Bad Request","No User Found",403);
+
+        const chosenOne=dbResp.results[0];
+        if(passHelpers.VerifyPass(loginObj.password,chosenOne.password)==false) return new Respond(null,"Status Bad Request","Wrong Password",403);
+
+        const toks=await tokenHelpers.UpdateToken(chosenOne.email,chosenOne.mobileNo);
+        chosenOne.token=toks.uptoken,chosenOne.refToken=toks.uprefToken;
+
+        return new Respond(chosenOne,null,"Let him in",200);
+
+    }catch(err){
+        console.log(err);
+        return Respond.internalServerError;
+    }
+}
+
+const authServices={Signup,CusLogin,ResLogin,MovLogin,AdminLogin};
 
 module.exports=authServices;
