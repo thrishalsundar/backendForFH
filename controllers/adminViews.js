@@ -139,3 +139,5 @@ const adminViews={
     SearchRest,
     SearchFood,
 }
+
+module.exports=adminViews;
