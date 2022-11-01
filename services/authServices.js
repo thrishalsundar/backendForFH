@@ -49,7 +49,7 @@ async function CusLogin(loginObj){
 
 async function ResLogin(loginObj){
 
-    const checkQuery=`select * from users where type='r' and (userid="${loginObj.userId}" or mobileNo="${loginObj.mobileNo}");`;
+    const checkQuery=`select * from users where type='r' and (user_id="${loginObj.userId}" or mobile_no="${loginObj.mobileNo}");`;
 
     try{
         const dbResp=await dbFeats.doThis(checkQuery);
@@ -72,7 +72,7 @@ async function ResLogin(loginObj){
 
 async function MovLogin(loginObj){
 
-    const checkQuery=`select * from users where type='m' and (userid="${loginObj.userId}" or mobileNo="${loginObj.mobileNo}");`;
+    const checkQuery=`select * from users where type='m' and (user_id="${loginObj.userId}" or mobile_no="${loginObj.mobileNo}");`;
 
     try{
         const dbResp=await dbFeats.doThis(checkQuery);
@@ -95,7 +95,7 @@ async function MovLogin(loginObj){
 
 async function AdminLogin(loginObj){
 
-    const checkQuery=`select * from admin where type='a' and username="${loginObj.username}" ;`;
+    const checkQuery=`select * from admin where username="${loginObj.username}" ;`;
 
     try{
         const dbResp=await dbFeats.doThis(checkQuery);
@@ -104,8 +104,6 @@ async function AdminLogin(loginObj){
         const chosenOne=dbResp.results[0];
         if(passHelpers.VerifyPass(loginObj.password,chosenOne.password)==false) return new Respond(null,"Status Bad Request","Wrong Password",403);
 
-        const toks=await tokenHelpers.UpdateToken(chosenOne.email,chosenOne.mobileNo);
-        chosenOne.token=toks.uptoken,chosenOne.refToken=toks.uprefToken;
 
         return new Respond(chosenOne,null,"Let him in",200);
 

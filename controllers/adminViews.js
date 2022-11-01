@@ -1,6 +1,5 @@
-const dbFeats = require("../database/dbSetup");
 const Respond = require("../utils/respHelper");
-const services=require("../services/adminServices");
+const services= require("../services/adminServices");
 const {Restaurant, User} = require("../models/models");
 
 async function GetFoods(_,res){

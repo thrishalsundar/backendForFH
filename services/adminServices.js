@@ -1,7 +1,7 @@
 const dbFeats = require("../database/dbSetup");
 const Respond = require("../utils/respHelper");
 
-async function  GetFoods(){
+async function GetFoods(){
 
     const getFoodsQuery=``;
 
@@ -42,6 +42,12 @@ async function CreateRestaurant(restObj){
 }
 
 async function NewResUser(signUpObj){
+    signUpObj.password=passHelpers.HashIt(signUpObj.password);
+    console.log(signUpObj.userId);
+    const toks=tokenHelpers.CreateToken(signUpObj.userId,signUpObj.mobileNo);
+    signUpObj.token=toks.token,signUpObj.refToken=toks.refToken;
+    signUpObj.lastLogin=new Date();
+    
     const insQuery=``;
 
     try{
@@ -55,6 +61,11 @@ async function NewResUser(signUpObj){
 }
 
 async function NewMovUser(signUpObj){
+    signUpObj.password=passHelpers.HashIt(signUpObj.password);
+    console.log(signUpObj.userId);
+    const toks=tokenHelpers.CreateToken(signUpObj.userId,signUpObj.mobileNo);
+    signUpObj.token=toks.token,signUpObj.refToken=toks.refToken;
+    signUpObj.lastLogin=new Date();
     
     const insQuery=``;
 

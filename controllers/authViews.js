@@ -57,7 +57,7 @@ async function CusLogin(req,res){
 
 async function ResLogin(req,res){
     const logObj=new User(req.body.loginCreds);
-    if(logObj.type!=='res'){
+    if(logObj.type!=='r'){
         return res.send(Respond.statusBadRequest);
     }
     if(logObj.LoginValidator()==false){
@@ -74,7 +74,7 @@ async function ResLogin(req,res){
 
 async function MovLogin(req,res){
     const logObj=new User(req.body.loginCreds);
-    if(logObj.type!=='mov'){
+    if(logObj.type!=='m'){
         return res.send(Respond.statusBadRequest);
     }
     if(logObj.LoginValidator()==false){

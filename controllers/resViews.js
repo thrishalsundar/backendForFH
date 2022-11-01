@@ -2,7 +2,7 @@ const Respond = require("../utils/respHelper");
 const services=require("../services/resServices");
 const FoodItem=require("../models/models");
 
-async function GetFoods(_,res){
+async function GetFoods(req,res){
 
     const resId=req.query.resId;
     if(!resId || resId==='') return res.status(403).send(Respond.statusBadRequest);

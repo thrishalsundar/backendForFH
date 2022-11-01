@@ -93,9 +93,8 @@ async function UpdateCart(cartId,cartContents){
     const updateCartQuery=`update cart set total="${totalAmount}" where cart_id="${cartId}"`;
     try{
         const dbResp=await dbFeats.doThis(updateCartQuery);
-        dbResp.results[0].cartContents=orderItemArr;
-        const some=dbResp.results[0]
-        return new Respond(some,null,"Successful",200);
+        console.log(JSON.stringify(dbResp));
+        return new Respond(null,null,"Successful",200);
     }catch(err){
         console.log(err);
         return Respond.internalServerError;
@@ -166,10 +165,10 @@ async function PlaceOrder(orderObj){
         return Respond.internalServerError;
     }
 
-    orderObj.FillCartDets(cartDets);
+    orderObj.FillCartDets(cartDets.cus_id,cartDets.add_id,cartDets.total);
 
 
-    const insNewOrder=`insert into food_delivery.order (order_id,cus_id,name,cart_id,ordered_at,order_stat,mobile_no,total) values("${orderObj.cartId}","${orderObj.cusId}" ,"${orderObj.name}", "${orderObj.cartId}" , now(), "i", "${orderObj.mobileNo}","${orderObj.total}")`;
+    const insNewOrder=`insert into food_delivery_db.orders (order_id,cus_id,name,cart_id,ordered_at,order_stat,mobile_no,total,add_id) values("${orderObj.cartId}","${orderObj.cusId}" ,"${orderObj.name}", "${orderObj.cartId}" , now(), "i", "${orderObj.mobileNo}","${orderObj.total}","new_address")`;
 
     try{
         const dbResp=await dbFeats.doThis(insNewOrder);
@@ -182,14 +181,14 @@ async function PlaceOrder(orderObj){
 }
 
 async function CancelOrder(orderId){
-    const fetchOrder=`select * from order where order="${orderId}"`;
-    const cancelOrder=`update order set orderstat='x' where order_id="${orderId}"`;
+    const fetchOrder=`select * from orders where order_id="${orderId}"`;
+    const cancelOrder=`update orders set order_stat='x' where order_id="${orderId}"`;
     
     try{
         const dbResp=await dbFeats.doThis(fetchOrder);
         if(dbResp.results.length===0) return new Respond(null,"Status Bad Request","No Cart in this cartId",403);
 
-        if(dbResp.results[0].orderStat!=='i') return new Respond(null,"Status Bad Request","Order Already Processed and cannot be cancelled",403);
+        if(dbResp.results[0].order_stat!=='i') return new Respond(null,"Status Bad Request","Order Already Processed and cannot be cancelled",403);
     }catch(err){
         console.log(err);
         return Respond.internalServerError;

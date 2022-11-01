@@ -75,6 +75,7 @@ async function UpdateCart(req,res){
     if(cartData.cartId==="") return res.status(403).send(Respond.statusBadRequest);
 
     if(checkToken(req.user.user_id, cartData.cartId)) return res.status(403).send(Respond.statusBadRequest);
+
     try{
         const resp=await services.UpdateCart(cartData.cartId,cartData.cartContents);
         return res.status(resp.stat).send(resp);

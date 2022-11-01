@@ -137,6 +137,7 @@ class Order{
         this.cartId=cartId,
         this.movId="",
         this.secretId="",  //after out4delivery
+        this.addId="",
         this.orderedAt=new Date(),
         this.orderStat="i",   // ini:cus,cooked:res,out4delivery:mov,delivered:mov
         this.mobileNo=mobileNo,
@@ -145,9 +146,10 @@ class Order{
         this.total=0
     }
 
-    FillCartDets(cartObj){
-        this.cusId=cartObj.cartId;
-        this.total=cartObj.total
+    FillCartDets(cusId,addId,total){
+        this.cusId=cusId;
+        this.addId=addId;
+        this.total=total
     }
 
 
