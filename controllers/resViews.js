@@ -1,6 +1,6 @@
 const Respond = require("../utils/respHelper");
 const services=require("../services/resServices");
-const FoodItem=require("../models/models");
+const {FoodItem}=require("../models/models");
 
 async function GetFoods(req,res){
 
@@ -24,7 +24,7 @@ async function UpdateStock(req,res){
 
     const foodIds=req.body.foodIds;
     if(!foodIds || foodIds.length===0) return res.status(403).send(Respond.statusBadRequest);
-    
+    console.log("priya");
     try{
         const resp=await services.UpdateStock(resId,foodIds);
         return res.status(resp.stat).send(resp);
@@ -53,7 +53,7 @@ async function UpdateRestDets(req,res){
     }
 }
 
-async function GetOrders(_,res){
+async function GetOrders(req,res){
 
     const resId=req.query.resId;
     if(!resId || resId==='') return res.status(403).send(Respond.statusBadRequest);
@@ -70,14 +70,15 @@ async function GetOrders(_,res){
 
 async function AddFoodItems(req,res){
 
-
+    const resId=req.query.resId;
     const foodItems=req.body.foodItems;
-    let foodItemsObjects;
+    //console.log(new FoodItem(foodItems[0]));
+    let foodItemsObjects=[];
 
-    for(const fI in foodItems){
-        const foodItemObject=new FoodItem(fI);
+    for(const fI of foodItems){
+        const foodItemObject=new FoodItem(resId,fI);
         if(foodItemObject.FoodValidator===false){
-            console.log(67);
+            //console.log(67);
             return res.status(403).send(Respond.statusBadRequest);
         }
         foodItemsObjects.push(foodItemObject);

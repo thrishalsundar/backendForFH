@@ -83,7 +83,7 @@ class FoodItem{
 
     constructor(resId,foodItemObj){
         this.id="",
-        this.foodId=this.foodName+resId,
+        this.foodId=foodItemObj.foodName+"@"+resId,
         this.displayName=foodItemObj.displayName,
         this.resId=resId, //hotelid  resusername
         //this.calories="",

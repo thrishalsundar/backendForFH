@@ -1,5 +1,7 @@
 const dbFeats = require("../database/dbSetup");
 const Respond = require("../utils/respHelper");
+const utilHelper = require("../utils/otherUtils");
+
 
 async function GetFoods(resId){
     const getFoodsQuery=`select * from food_item where res_id="${resId}"`;
@@ -14,10 +16,8 @@ async function GetFoods(resId){
 
 async function UpdateStock(resId,foodIds){
 
-    const foodIdBing=foodIds.toString();
-    const foodIdString=foodIdBing.subString(1,foodIdBing.length-1);
-    
-    const updQuery=`update food_item set instock=1 where food_id in (${foodIdString})`;
+    const foodIdBing=utilHelper.arrToString(foodIds);
+    const updQuery=`update food_item set instock=1 where food_id in (${foodIdBing})`;
     try{
         const dbResp=await dbFeats.doThis(updQuery);
         return new Respond(null,null,"Successful",200);
@@ -28,7 +28,7 @@ async function UpdateStock(resId,foodIds){
 
 }
 async function UpdateRestDets(resId,updatedDets){
-    const updateResQuery=`update restaurant set display_name="${updatedDets.displayName}", branch="${updatedDets.branch}", email="${updatedDets.email}", logo_url="${updatedDets.logoUrl}", website="${updatedDets.website}", open_time="9am", close_time="5pm" where res_id="${resId}"`;
+    const updateResQuery=`update restaurant set display_name="${updatedDets.displayName}", branch="${updatedDets.branch}", email="${updatedDets.email}", logo_url="${updatedDets.logoUrl}", website="${updatedDets.website}", open_time="${updatedDets.oTime}", close_time="${updatedDets.cTime}" where res_id="${resId}"`;
     try{
         const dbResp=await dbFeats.doThis(updateResQuery);
         console.log(dbResp.results)
@@ -40,8 +40,7 @@ async function UpdateRestDets(resId,updatedDets){
 }
 
 async function GetOrders(resId){
-    const getOrdersQuery=`select o.order_id,o.cus_id,o.name,o.cart_id,o.ordered_at,o.order_stat, o.total from order o 
-    join cart c on o.cart_id=c.cart where c.res_id="${resId}"`;
+    const getOrdersQuery=`select o.order_id,o.cus_id,o.name,o.cart_id,o.ordered_at,o.order_stat, o.total from orders as o left join cart as c on o.cart_id=c.cart_id where c.res_id="${resId}"`;
 
     try{
         const dbResp=await dbFeats.doThis(getOrdersQuery);
@@ -54,8 +53,7 @@ async function GetOrders(resId){
 
 async function AddFoodItems(foodItemsObjects){
     const demoObj = foodItemsObjects[0];
-    const addFoodsQuery=`insert into food_item (food_id,display_name,res_id,category_type,cuisine_type,is_veg,description,amount,contents,instock,image) values ("${demoObj.foodId}", "${demoObj.displayName}","${demoObj.resId}","${demoObj.categoryType}",
-    "${demoObj.cuisine_type}", "${demoObj.is_veg}", "${demoObj.description}", "${demoObj.amount}", "${demoObj.contents}", 0 , "${demoObj.image}")`;  // [ {},{},{}  ]
+    const addFoodsQuery=`insert into food_item (food_id,display_name,res_id,category_type,cuisine_type,is_veg,description,amount,contents,image) values ("${demoObj.foodId}", "${demoObj.displayName}","${demoObj.resId}","${demoObj.categoryType}","${demoObj.cuisineType}", "${utilHelper.tiOf(demoObj.is_veg)}", "${demoObj.description}", "${demoObj.amount}", "${demoObj.contents}" , "${demoObj.image}")`;  // [ {},{},{}  ]
 
     try{
         const dbResp=await dbFeats.doThis(addFoodsQuery);

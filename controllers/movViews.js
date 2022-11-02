@@ -11,8 +11,8 @@ async function UpdateAvail(req,res){
 
 
     try{
-        const resp=services.UpdateAvail(movId,stat);
-        return res.status(resp.stat).send(resp)
+        const resp=await services.UpdateAvail(movId,stat);
+        return res.status(resp.stat).send(resp);
     }catch(err){
         console.log(err);
         return res.status(500).send(Respond.internalServerError);
@@ -25,7 +25,7 @@ async function GetOrders(req,res){
     if(!address || address.pincode==='') return res.status(403).send(Respond.statusBadRequest);
 
     try{
-        const resp=services.GetOrders(address);
+        const resp=await services.GetOrders(address);
         return res.status(resp.stat).send(resp)
     }catch(err){
         console.log(err);
@@ -43,7 +43,7 @@ async function ClaimOrder(req,res){
 
 
     try{
-        const resp=services.ClaimOrder(movId,orderId);
+        const resp=await services.ClaimOrder(movId,orderId);
         return res.status(resp.stat).send(resp)
     }catch(err){
         console.log(err);
@@ -60,7 +60,7 @@ async function UpdateOrder(req,res){
     const otpNo=RandGen(4);
 
     try{
-        const resp=services.UpdateOrder(orderId,otpNo);
+        const resp=await services.UpdateOrder(orderId,otpNo);
         return res.status(403).send(resp);
     }catch(err){
         console.log(err);
@@ -75,7 +75,7 @@ async function DeliveryUpdate(req,res){
     const orderId=req.query.orderId;
 
     try{
-        const resp=services.DeliveryUpdate(secKey,orderId);
+        const resp=await services.DeliveryUpdate(secKey,orderId);
         return res.status(resp.stat).send(resp);
     }catch(err){
         console.log(err);

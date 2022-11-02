@@ -28,11 +28,11 @@ async function GetOrders(address){
 }
 
 async function ClaimOrder(movId,orderId){
-    const claimOrderQuery=`update orders set orders mov_id="${movId}" where order_id="${orderId}"`;  //orders mover=movID update
+    const claimOrderQuery=`update orders set mov_id="${movId}" where order_id="${orderId}"`;  //orders mover=movID update
 
     try{
         const dbResp=await dbFeats.doThis(claimOrderQuery);
-        return new Respond(dbResp.results,null,"Successful",200);
+        return new Respond(null,null,"Successful",200);
     }catch(err){
         console.log(err);
         return Respond.internalServerError;
@@ -55,13 +55,11 @@ async function UpdateOrder(orderId,otpNo){
 
 async function DeliveryUpdate(secKey,orderId){
 
-    const checkQuery=`select secret_id from orders where secret_id="${secKey}" `; //check
+    const checkQuery=`select secret_id from orders where secret_id="${secKey}" and order_id="${orderId}"`; //check
 
     try{
         const dbResp=await dbFeats.doThis(checkQuery);
-        const keyFromDb=dbResp.results[0].secret_id;
-
-        if(keyFromDb!==secKey) throw "Wrong Secret Key";
+        if(dbResp.results.length===0) throw "Wrong Secret Key";
 
         const updateQuery=`update orders set order_stat='d' where order_id="${orderId}"`; //update d
 

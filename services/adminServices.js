@@ -1,9 +1,11 @@
 const dbFeats = require("../database/dbSetup");
 const Respond = require("../utils/respHelper");
+const passHelpers = require("../utils/passHelper");
+const tokenHelpers = require("../utils/tokenHelper");
 
 async function GetFoods(){
 
-    const getFoodsQuery=``;
+    const getFoodsQuery=`select * from food_item`;
 
     try{
         const dbResp=dbFeats.doThis(getFoodsQuery);
@@ -16,7 +18,7 @@ async function GetFoods(){
 
 async function  GetRests(){
 
-    const getRestsQuery=``;
+    const getRestsQuery=`select * from restaurant`;
 
     try{
         const dbResp=dbFeats.doThis(getRestsQuery);
@@ -29,7 +31,7 @@ async function  GetRests(){
 
 
 async function CreateRestaurant(restObj){
-    const insQuery=``;
+    const insQuery=`insert into food_delivery_db.restaurant (display_name,branch,res_id,email,address,open_time,close_time) values("${restObj.displayName}","${restObj.branch}","${restObj.resId}","${restObj.email}","enter address",now(),now())`; //insert
 
     try{
         const dbResp=dbFeats.doThis(insQuery);
@@ -48,7 +50,7 @@ async function NewResUser(signUpObj){
     signUpObj.token=toks.token,signUpObj.refToken=toks.refToken;
     signUpObj.lastLogin=new Date();
     
-    const insQuery=``;
+    const insQuery=`insert into user(type , first_name , last_name , user_id , mobile_no,  password , email , address, token , ref_token,   last_login) values("r", "${signUpObj.fName}", "${signUpObj.lName}", "${signUpObj.userId}", ${signUpObj.mobileNo}, "${signUpObj.password}", "${signUpObj.email}", "${signUpObj.address}", "${signUpObj.token}", "${signUpObj.refToken}", now())`;
 
     try{
         const dbResp=dbFeats.doThis(insQuery);
@@ -67,7 +69,7 @@ async function NewMovUser(signUpObj){
     signUpObj.token=toks.token,signUpObj.refToken=toks.refToken;
     signUpObj.lastLogin=new Date();
     
-    const insQuery=``;
+    const insQuery=`insert into user(type , first_name , last_name , user_id , mobile_no,  password , email , address, token , ref_token, is_available, last_login) values("m", "${signUpObj.fName}", "${signUpObj.lName}", "${signUpObj.userId}", ${signUpObj.mobileNo}, "${signUpObj.password}", "${signUpObj.email}", "${signUpObj.address}", "${signUpObj.token}", "${signUpObj.refToken}",0,now()) ;`;
 
     try{
         const dbResp=dbFeats.doThis(insQuery);
@@ -80,7 +82,7 @@ async function NewMovUser(signUpObj){
 }
 
 async function DeleteRestaurant(resId){
-    const deleteQuery=``;
+    const deleteQuery=`delete from restaurant where res_id="${resId}"`;
 
     try{
         const dbResp=dbFeats.doThis(deleteQuery);
@@ -93,7 +95,7 @@ async function DeleteRestaurant(resId){
 }
 
 async function DeleteUser(userId){
-    const deleteQuery=``;
+    const deleteQuery=`delete from user where user_id="${userId}"`;
 
     try{
         const dbResp=dbFeats.doThis(deleteQuery);
@@ -107,7 +109,7 @@ async function DeleteUser(userId){
 
 async function SearchRest(searchQuery){
 
-    const searchDbQuery=``;
+    const searchDbQuery=`select * from restaurant where display_name like "%${searchQuery}%"`;
 
     try{
         const dbResp=dbFeats.doThis(searchDbQuery);
@@ -121,7 +123,7 @@ async function SearchRest(searchQuery){
 
 async function SearchFood(searchQuery){
 
-    const searchDbQuery=``;
+    const searchDbQuery=`select * from food_item where display_name like "%${searchQuery}%" `;
 
     try{
         const dbResp=dbFeats.doThis(searchDbQuery);

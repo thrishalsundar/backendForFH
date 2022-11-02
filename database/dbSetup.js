@@ -1,10 +1,10 @@
 const mysql=require("mysql");
 const connection=mysql.createConnection({
     host:'localhost',
-    user:'forTeam',
-    password:'rmkpullingos',
-    database:'food_delivery',
-    port:3333
+    user:'root',
+    password:'Admin@mmjp',
+    database:'food_delivery_db',
+    port:3306
 });
 
 
