@@ -74,7 +74,7 @@ async function UpdateCart(req,res){
     const cartData=req.body.cartData;
     if(cartData.cartId==="") return res.status(403).send(Respond.statusBadRequest);
 
-    if(checkToken(req.user.user_id, cartData.cartId)) return res.status(403).send(Respond.statusBadRequest);
+    //if(checkToken(req.user.user_id, cartData.cartId)) return res.status(403).send(Respond.statusBadRequest);
 
     try{
         const resp=await services.UpdateCart(cartData.cartId,cartData.cartContents);
@@ -90,7 +90,7 @@ async function ConfirmCart(req,res){
     const cartId=req.query.cartId;
 
     if(cartId==="") return res.status(403).send(Respond.statusBadRequest);
-    if(checkToken(req.user.user_id, cartId)) return res.status(403).send(Respond.statusBadRequest);
+    //if(checkToken(req.user.user_id, cartId)) return res.status(403).send(Respond.statusBadRequest);
 
     try{
         const resp=await services.ConfirmCart(cartId);

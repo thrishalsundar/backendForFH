@@ -1,10 +1,10 @@
 const mysql=require("mysql");
 const connection=mysql.createConnection({
     host:'localhost',
-    user:'root',
-    password:'Admin@mmjp',
-    database:'food_delivery_db',
-    port:3306
+    user: process.env.SQL_USER,
+    password:process.env.SQL_PWD,
+    database:process.env.SQL_DB,
+    port:process.env.SQL_PORT,
 });
 
 

@@ -4,7 +4,7 @@ function RandGen(i){
 
 
 function tiOf(b) {
-    return (b==false)?1:0
+    return (b==false)?0:1
 }
 
 

@@ -14,12 +14,13 @@ async function GetFoods(resId){
     }
 }
 
-async function UpdateStock(resId,foodIds){
+async function UpdateStock(_,foodIds){
 
     const foodIdBing=utilHelper.arrToString(foodIds);
     const updQuery=`update food_item set instock=1 where food_id in (${foodIdBing})`;
     try{
         const dbResp=await dbFeats.doThis(updQuery);
+        console.log(dbResp);
         return new Respond(null,null,"Successful",200);
     }catch(err){
         console.log(err);
@@ -57,6 +58,7 @@ async function AddFoodItems(foodItemsObjects){
 
     try{
         const dbResp=await dbFeats.doThis(addFoodsQuery);
+        console.log(dbResp);
         return new Respond(null,null,"Successful",200)
     }catch(err){
         console.log(err);
@@ -67,10 +69,11 @@ async function AddFoodItems(foodItemsObjects){
 
 async function UpdateOrderStatus(orderId){
 
-    const updateOrderQuery=`update order set order_stat='c' where order_id="${orderId}"`;
+    const updateOrderQuery=`update orders set order_stat='c' where order_id="${orderId}"`;
 
     try{
         const dbResp=await dbFeats.doThis(updateOrderQuery);
+        console.log(dbResp);
         return new Respond(null,null,"Successful",200);
     }catch(err){
         console.log(err);
@@ -80,10 +83,11 @@ async function UpdateOrderStatus(orderId){
 }
 async function UpdateFoodStatus(foodData){
 
-    const updateFoodQuery=`update food_item set instock="${foodData.instock}" where food_id="${foodData.foodId}"`;
+    const updateFoodQuery=`update food_item set instock="${utilHelper.tiOf(foodData.instock)}" where food_id="${foodData.foodId}"`;
 
     try{
         const dbResp=await dbFeats.doThis(updateFoodQuery);
+        console.log(dbResp);
         return new Respond(null,null,"Successful",200);
     }catch(err){
         console.log(err);
@@ -93,10 +97,12 @@ async function UpdateFoodStatus(foodData){
 
 async function UpdateOpenStatus(resData){
 
-    const updateOpenStatQuery=`update restaurant set open_status="${resData.openstat}" where res_id="${resData.resId}"`;
+    console.log(utilHelper.tiOf(resData.openstat))
+    const updateOpenStatQuery=`update restaurant set open_status="${utilHelper.tiOf(resData.openstat)}" where res_id="${resData.resId}"`;
     
     try{
         const dbResp=await dbFeats.doThis(updateOpenStatQuery);
+        console.log(dbResp);
         return new Respond(null,null,"Successful",200);
     }catch(err){
         console.log(err);

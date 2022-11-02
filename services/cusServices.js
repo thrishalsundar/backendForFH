@@ -168,7 +168,7 @@ async function PlaceOrder(orderObj){
     orderObj.FillCartDets(cartDets.cus_id,cartDets.add_id,cartDets.total);
 
 
-    const insNewOrder=`insert into food_delivery_db.orders (order_id,cus_id,name,cart_id,ordered_at,order_stat,mobile_no,total,add_id) values("${orderObj.cartId}","${orderObj.cusId}" ,"${orderObj.name}", "${orderObj.cartId}" , now(), "i", "${orderObj.mobileNo}","${orderObj.total}","new_address")`;
+    const insNewOrder=`insert into orders (order_id,cus_id,name,cart_id,ordered_at,order_stat,mobile_no,total,add_id) values("${orderObj.cartId}","${orderObj.cusId}" ,"${orderObj.name}", "${orderObj.cartId}" , now(), "i", "${orderObj.mobileNo}","${orderObj.total}","new_address")`;
 
     try{
         const dbResp=await dbFeats.doThis(insNewOrder);

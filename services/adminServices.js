@@ -31,7 +31,8 @@ async function  GetRests(){
 
 
 async function CreateRestaurant(restObj){
-    const insQuery=`insert into food_delivery_db.restaurant (display_name,branch,res_id,email,address,open_time,close_time) values("${restObj.displayName}","${restObj.branch}","${restObj.resId}","${restObj.email}","enter address",now(),now())`; //insert
+    console.log(restObj);
+    const insQuery=`insert into restaurant (display_name,branch,res_id,email,logo_url,website,address,open_time,close_time) values("${restObj.displayName}","${restObj.branch}","${restObj.resId}","${restObj.email}","${restObj.logoUrl}","${restObj.website}","enter address","${restObj.oTime}","${restObj.cTime}")`; //insert
 
     try{
         const dbResp=dbFeats.doThis(insQuery);

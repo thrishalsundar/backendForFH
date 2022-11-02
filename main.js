@@ -13,7 +13,7 @@ const movRoutes=require('./routes/movRoutes');
 const adminRoutes=require('./routes/adminRoutes');
 
 
-const port=process.env.PORT;
+const port=process.env.SERVER_PORT;
 
 app.use(bodyParser.json());
 app.use('/admin', adminRoutes);
