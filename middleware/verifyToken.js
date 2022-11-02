@@ -10,6 +10,7 @@ async function VerifyTokens(req,res,next){
 
     try{
         const decoded=await tokenHelper.VerifyToken(token);
+        console.log(decoded);
         console.log(decoded.user_id+"             "+req.header("user_id"));
         if(decoded.user_id!==req.header("user_id")) throw "userId!=tokenId";
         req.user=decoded;

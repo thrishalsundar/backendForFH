@@ -152,7 +152,7 @@ async function SearchRestOrFood(searchQuery){
     return new Respond({restRes,foodRes},null,"Successful",200);
 }
 
-async function PlaceOrder(orderObj){
+async function PlaceOrder(orderObj,f){
     const fetchCartDets=`select * from cart where cart_id="${orderObj.cartId}"`;
     let cartDets;
 
@@ -165,10 +165,32 @@ async function PlaceOrder(orderObj){
         return Respond.internalServerError;
     }
 
+
+    if(!f){
+        const countQuery = `select count(*) as count from address where user_id="${orderObj.cusId}"`;
+        try{
+            const dbResp=await dbFeats.doThis(countQuery);
+            const cc=(dbResp.results[0].count)+1;
+            cartDets.add_id = cartDets.cus_id+'#'+cc.toString();  //str+int
+        }catch(err){
+            console.log(err)
+            return Respond.internalServerError;
+        }
+        const addQuery = `insert into address (add_id,user_id,door_no,street_name,landmark,city,state,pincode) values ("${cartDets.add_id}","${cartDets.cus_id}","${orderObj.address.houseNo}","${orderObj.address.streetName}","${orderObj.address.landmark}","${orderObj.address.city}","${orderObj.address.state}","${orderObj.address.pincode}")`
+        try{
+            const dbResp=await dbFeats.doThis(addQuery);
+            console.log(dbResp.results);
+
+        }catch(err){
+            console.log(err);
+            return Respond.internalServerError;
+        }
+    }
+
     orderObj.FillCartDets(cartDets.cus_id,cartDets.add_id,cartDets.total);
 
 
-    const insNewOrder=`insert into orders (order_id,cus_id,name,cart_id,ordered_at,order_stat,mobile_no,total,add_id) values("${orderObj.cartId}","${orderObj.cusId}" ,"${orderObj.name}", "${orderObj.cartId}" , now(), "i", "${orderObj.mobileNo}","${orderObj.total}","new_address")`;
+    const insNewOrder=`insert into orders (order_id,cus_id,name,cart_id,ordered_at,order_stat,mobile_no,total,add_id) values("${orderObj.cartId}","${orderObj.cusId}" ,"${orderObj.name}", "${orderObj.cartId}" , now(), "i", "${orderObj.mobileNo}","${orderObj.total}","${cartDets.add_id}")`;
 
     try{
         const dbResp=await dbFeats.doThis(insNewOrder);

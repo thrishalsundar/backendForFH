@@ -7,6 +7,7 @@ routes.get('/',(_,res)=>{res.send({"msg":"underConstruction"})});
 routes.get('/myfoods',resViews.GetFoods);
 routes.put('/upstocks',resViews.UpdateStock);
 routes.put('/updaterest',resViews.UpdateRestDets);
+routes.put('/updateadd',resViews.UpdateRestAddress);
 routes.get('/forders',resViews.GetOrders);
 routes.post('/addfoods',resViews.AddFoodItems);
 routes.put('/upordstat',resViews.UpdateOrderStatus);

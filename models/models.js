@@ -18,7 +18,7 @@ class User{
         this.mobileNo=signupObj.mobileNo,
         this.password=signupObj.password,
         this.email=signupObj.email,
-        this.address=this.address,   //string in SQL    
+        this.address=signupObj.address,   //string in SQL    
         this.orderHistory=[], //historyStruct based on user -abt
         this.token="",
         this.refToken="",
@@ -44,8 +44,8 @@ class User{
 
 class Address{
     constructor(obj){
-        this.id=id,
-        this.addId=obj.addId,
+        this.id="",
+        this.addId="",
         this.userId=obj.userId,
         this.houseNo=obj.houseNo,
         this.streetName=obj.streetName,
@@ -64,7 +64,7 @@ class Restaurant{
         this.branch=restData.branch,
         this.resId=restData.resId,  //resUserName
         this.email=restData.email,
-        this.address={},  //str
+        this.address=restData.address,  //str
         this.foodsAvail=[ 
             //        { foodId:"", inStock:false } 
         ],     //abt
@@ -103,7 +103,7 @@ class FoodItem{
 class Cart{
     constructor(cst,rst,time){
         this.id="",
-        this.cartId=cst+rst+time;
+        this.cartId=cst+'@'+rst+time;
         this.cartContents=[],  
         this.total=0,
         this.cusId=cst,
@@ -129,7 +129,7 @@ class OrderItem{
 }
 
 class Order{
-    constructor(cartId,name,mobileNo){
+    constructor(cartId,addId,name,mobileNo,address){
         this.id="",
         this.orderId=cartId,
         this.cusId="", //userid
@@ -137,7 +137,8 @@ class Order{
         this.cartId=cartId,
         this.movId="",
         this.secretId="",  //after out4delivery
-        this.addId="",
+        this.address=address,
+        this.addId=addId,
         this.orderedAt=new Date(),
         this.orderStat="i",   // ini:cus,cooked:res,out4delivery:mov,delivered:mov
         this.mobileNo=mobileNo,

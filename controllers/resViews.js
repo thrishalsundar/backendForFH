@@ -53,6 +53,21 @@ async function UpdateRestDets(req,res){
     }
 }
 
+
+async function UpdateRestAddress(req,res){
+    const address=req.body.address;
+    const resId=req.query.resId;
+    if(!resId || resId==='') return res.status(403).send(Respond.statusBadRequest);
+
+    try{
+        const resp=await services.UpdateRestAddress(resId,address);
+        return res.status(resp.stat).send(resp);
+    }catch(err){
+        console.log(err);
+        return res.status(500).send(Respond.internalServerError);
+    }
+}
+
 async function GetOrders(req,res){
 
     const resId=req.query.resId;
@@ -154,6 +169,7 @@ const resViews={
     GetFoods,
     UpdateStock,
     UpdateRestDets,
+    UpdateRestAddress,
     GetOrders,
     AddFoodItems,
     UpdateOrderStatus,

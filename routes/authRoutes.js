@@ -6,8 +6,8 @@ const routes=express.Router();
 
 async function TestFunction(_,res){
 
-    const queryyy=`select * from user`;
-    const dbResp=await dbFeats.doThis(queryyy);
+    const countQuery = `select count(*) as total from address`;
+    const dbResp=await dbFeats.doThis(countQuery);
     console.log("dbResp:"+dbResp);
     console.log("error:"+dbResp.error);
     console.log("results:"+dbResp.results);

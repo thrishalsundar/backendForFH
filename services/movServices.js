@@ -16,7 +16,7 @@ async function UpdateAvail(movId,stat){
 
 
 async function GetOrders(address){
-    const getOrdersQuery=`select orders.* from orders o join address a on o.add_id = a.add_id where a.pincode="${address.pincode}"`;  //add.pincode select  add_id add in orders (user_id+door_no)
+    const getOrdersQuery=`select o.* from orders as o join address as a on o.add_id = a.add_id where a.pincode="${address.pincode}"`;  //add.pincode select  add_id add in orders (user_id+door_no)
 
     try{
         const dbResp=await dbFeats.doThis(getOrdersQuery);

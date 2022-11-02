@@ -131,13 +131,14 @@ async function SearchRestOrFood(req,res){
 async function PlaceOrder(req,res){
 
     const orderDets=req.body.orderDets;
-    const newOrder=new Order(orderDets.cartId,orderDets.name,orderDets.mobileNo);
+    const newOrder=new Order(orderDets.cartId,orderDets.addId,orderDets.name,orderDets.mobileNo,orderDets.address);
 
     if(newOrder.OrderValidator()===false) return res.status(403).send(Respond.statusBadRequest);
-
-
+    
+    let f=true;
+    if(newOrder.addId==='') f=false;  //insert add
     try{
-        const resp=await services.PlaceOrder(newOrder);
+        const resp=await services.PlaceOrder(newOrder,f);
         return res.status(resp.stat).send(resp);
     }catch(err){
         console.log(err);

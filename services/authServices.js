@@ -1,4 +1,5 @@
 const dbFeats=require('../database/dbSetup');
+const { Address } = require('../models/models');
 const passHelpers=require('../utils/passHelper');
 const Respond = require('../utils/respHelper');
 const tokenHelpers=require('../utils/tokenHelper')
@@ -8,18 +9,42 @@ async function Signup(signUpObj){
     console.log(signUpObj.userId);
     const toks=tokenHelpers.CreateToken(signUpObj.userId,signUpObj.mobileNo);
     signUpObj.token=toks.token,signUpObj.refToken=toks.refToken;
-    signUpObj.lastLogin=new Date();
+    console.log(signUpObj.address);
 
-    const insQuery=`insert into user(type , first_name , last_name , user_id , mobile_no,  password , email , address, token , ref_token,   last_login) values("${signUpObj.type}", "${signUpObj.fName}", "${signUpObj.lName}", "${signUpObj.userId}", ${signUpObj.mobileNo}, "${signUpObj.password}", "${signUpObj.email}", "${signUpObj.address}", "${signUpObj.token}", "${signUpObj.refToken}", now()) ;`
+    signUpObj.lastLogin=new Date();
+    signUpObj.address=new Address(signUpObj.address);
+
+    const countQuery = `select count(*) as count from address where user_id="${signUpObj.userId}"`;
+    try{
+        const dbResp=await dbFeats.doThis(countQuery);
+        const cc=(dbResp.results[0].count)+1;
+        signUpObj.address.addId = signUpObj.userId+'#'+cc.toString();  //str+int
+    }catch(err){
+        console.log(err)
+        return Respond.internalServerError;
+    }
+    
+    const insQuery=`insert into user(type , first_name , last_name , user_id , mobile_no,  password , email , address, token , ref_token,   last_login) values("${signUpObj.type}", "${signUpObj.fName}", "${signUpObj.lName}", "${signUpObj.userId}", ${signUpObj.mobileNo}, "${signUpObj.password}", "${signUpObj.email}", "${signUpObj.address.addId}", "${signUpObj.token}", "${signUpObj.refToken}", now()) ;`
 
     try{
         const dbResp=await dbFeats.doThis(insQuery);
         console.log(dbResp.results);
-        return new Respond(null,null,"Signed up Successfully",200);
+        
     } catch(err){
         console.log(err)
         return Respond.internalServerError;
     }
+
+    const addQuery = `insert into address (add_id,user_id,door_no,street_name,landmark,city,state,pincode) values ("${signUpObj.address.addId}","${signUpObj.address.userId}","${signUpObj.address.houseNo}","${signUpObj.address.streetName}","${signUpObj.address.landmark}","${signUpObj.address.city}","${signUpObj.address.state}","${signUpObj.address.pincode}")`;
+    try{
+        const dbResp=await dbFeats.doThis(addQuery);
+        console.log(dbResp.results);
+        return new Respond(null,null,"successfull",200);
+    }catch(err){
+        console.log(err)
+        return Respond.internalServerError;
+    }
+
 }
 
 async function CusLogin(loginObj){
@@ -83,7 +108,7 @@ async function MovLogin(loginObj){
 
         const toks=await tokenHelpers.UpdateToken(chosenOne.user_id,chosenOne.mobile_no);
         chosenOne.token=toks.uptoken,chosenOne.refToken=toks.uprefToken;
-
+        console.log(chosenOne);
         
         return new Respond(chosenOne,null,"Let him in",200);
     }catch(err){
